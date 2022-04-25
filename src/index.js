@@ -47,7 +47,8 @@ app.post('/users', (request, response) => {
     todos: []
   });
 
-  return response.status(201).json({ mesage: "🎉 User created!"});
+  // return response.status(201).json({ mesage: "🎉 User created!"});
+  return response.status(201).json(users);
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
@@ -57,7 +58,21 @@ app.get('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { title, deadline } = request.body;
+
+  const { user } = request;
+
+  const createTask = {
+    id: uuidv4(),
+    title,
+    done: false,
+    deadline: new Date(deadline),
+    created_at: new Date()
+  }
+
+  user.todos.push(createTask);
+
+  return response.status(201).json({ mesage: "🎉 Task created successfully!" });
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
