@@ -17,7 +17,7 @@ function checksExistsUserAccount(request, response, next) {
   const user = users.find((user) => user.username === username);
 
   if (!user) {
-    return response.status(400).json({ error: "🕵🏾‍♂ User not found!"});
+    return response.status(400).send({ error: "🕵🏾‍♂ User not found!"});
   }
 
   request.user = user; //Passando informação para a rota.
@@ -28,7 +28,7 @@ function checksExistsUserAccount(request, response, next) {
 app.get('/users', checksExistsUserAccount, (request, response) => {
   const { user } = request;
 
-  return response.json(user);
+  return response.status(200).send(user);
 });
 
 app.post('/users', (request, response) => {
@@ -37,18 +37,18 @@ app.post('/users', (request, response) => {
   const userAlreadyExists = users.some((user) => user.username === username);
 
   if (userAlreadyExists) {
-    return response.status(400).json({ error: "🤦🏿‍♂ User already exist!" });
+    return response.status(400).send({ error: "🤦🏿‍♂ User already exist!" });
   }
 
   users.push({
-    username,
     name,
+    username,
     id: uuidv4(),
     todos: []
   });
 
   // return response.status(201).json({ mesage: "🎉 User created!"});
-  return response.status(201).json(users);
+  return response.status(201).send(users);
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
@@ -72,7 +72,8 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 
   user.todos.push(createTask);
 
-  return response.status(201).json({ mesage: "🎉 Task created successfully!" });
+  // return response.status(201).json({ mesage: "🎉 Task created successfully!" });
+  return response.status(201).json(createTask);
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
